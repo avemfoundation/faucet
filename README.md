@@ -1,4 +1,4 @@
-# Avem Faucet Contract
+# Avem Faucet Smart-Contract
 
 This contract is a simple faucet that allows users to request a specified amount of ether from a pool of funds. The contract has the following features:
 
