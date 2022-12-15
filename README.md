@@ -24,3 +24,43 @@ The contract includes the following security measures:
 - The `drip` value is set in the contract constructor and can only be changed by calling the `setDrip` function, which can only be called by the current owner.
 - The `requestTokens` function includes a `require` statement that checks that the user has waited the required amount of time before requesting tokens again.
 - The `requestTokens` function includes a `require` statement that checks that the contract has sufficient funds to fulfill the request.
+
+
+# Token Request API
+
+## Overview
+
+The Token Request API is an API for requesting tokens from a smart contract faucet. This API accepts a request with a user's Ethereum address, validates the address, and then makes a request to the smart contract faucet to transfer tokens to the user's address. The API also tracks the timestamp of the last request made by each user to enforce a minimum wait time before another request can be made.
+
+## API Endpoints
+
+### POST /request-tokens
+
+Makes a request to the faucet to transfer tokens to the user's Ethereum address.
+
+#### Request Body
+
+The request body should be a JSON object with the following format:
+
+```
+{
+"address": "<user's Ethereum address>"
+}
+```
+
+#### Response
+
+If the request is successful, the response will be a JSON object with the following format:
+
+```
+{
+"success": true
+}
+```
+
+If the request is unsuccessful, the response will be a JSON object with the following format:
+```
+{
+"error": "<error message>"
+}
+```
