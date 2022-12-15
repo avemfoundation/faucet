@@ -1,9 +1,10 @@
-// SPDX-License-Identifier: MIT
 pragma solidity 0.8.3;
 
 contract Faucet {
     address public owner;
-    uint public drip = 5 ether;
+    uint public drip = 1 ether;
+    uint public dailyDripLimit = 10 ether;
+    uint public dailyDrip = 0;
 
     mapping(address => uint) public lockTime;
 
@@ -24,6 +25,10 @@ contract Faucet {
         drip = newDripValue;
     }
 
+    function setDailyDripLimit(uint newDailyDripLimit) public onlyOwner {
+        dailyDripLimit = newDailyDripLimit;
+    }
+
     function donateToFaucet() public payable {
         // Nothing to do here - just receive the funds
     }
@@ -33,15 +38,21 @@ contract Faucet {
 
         require(block.timestamp > lockTime[_requestor], "Sorry, you must wait before requesting tokens again. Please try again later.");
 
+        // Check if the daily drip limit has been exceeded
+        require(dailyDrip + drip <= dailyDripLimit, "The daily drip limit has been exceeded. Please try again tomorrow.");
+
         require(address(this).balance >= drip, "The faucet does not have enough funds to fulfill your request. Please consider donating to the faucet to help keep it running.");
 
         lockTime[_requestor] = block.timestamp + 1 days;
 
+        // Increment the daily drip counter
+        dailyDrip += drip;
+
         _requestor.transfer(drip);        
     }
 
-    function getFaucetInfo() public view returns (address, uint) {
-        return (owner, drip);
+    function getFaucetInfo() public view returns (address, uint, uint) {
+        return (owner, drip, dailyDripLimit);
     }
 
     function getFaucetBalance() public view returns (uint) {
